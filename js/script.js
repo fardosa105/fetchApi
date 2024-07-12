@@ -1,19 +1,5 @@
 const apiUrl = "http://localhost:3000/photos"
 
-// getting form inputs
-let photoAlbum = document.getElementById('album').value
-let photUrl = document.getElementById('image').value
-let photoThumbnail = document.getElementById('thumb').value
-let PhotoTitle = document.getElementById('title').value
-
-// creating object from form input
-const formData = {
-    albumId : photoAlbum,
-    url : photUrl,
-    thumbnailUrl: photoThumbnail,
-    title: PhotoTitle
-}
-
 // Getting All Resources
 
 fetch(apiUrl)
@@ -60,9 +46,22 @@ form.addEventListener('submit', e =>  {
 
     // prevent form for reloading
     e.preventDefault()
+    console.log(e)
     
-    
+    // getting form inputs
+    let photoAlbum = document.getElementById('album').value
+    let photUrl = document.getElementById('image').value
+    let photoThumbnail = document.getElementById('thumb').value
+    let PhotoTitle = document.getElementById('title').value
 
+    // creating object from form input
+    const formData = {
+        albumId : photoAlbum,
+        url : photUrl,
+        thumbnailUrl: photoThumbnail,
+        title: PhotoTitle
+    }
+    console.log(formData)
     
    
     // sending data to the server using fetch api
@@ -76,6 +75,17 @@ form.addEventListener('submit', e =>  {
     })
     .then(res => res.json())
     .then(photo => console.log(photo))
+
+    // Resetting form inputs
+    document.getElementById('album').value = ""
+    document.getElementById('image').value = ""
+    document.getElementById('thumb').value = ""
+    document.getElementById('title').value = ""
+
+    
+
+   
+
 
 
 })
@@ -106,36 +116,42 @@ function editPhoto(albumId, id, title, url, thumbnailUrl){
         document.getElementById('thumb').value = thumbnailUrl
         document.getElementById('title').value = title
 
-    //  photoAlbum = albumId
-    //  photUrl = url
-    //  photoThumbnail = thumbnailUrl
-    //  PhotoTitle = title
-
-    // update the data now
 
 
+        let btn = document.getElementById('btn')
+
+        btn.addEventListener('click', function(e){
+            e.preventDefault()
+
+        // getting updated form inputs
+        let updatedAlbum = document.getElementById('album').value
+        let updatedPhotoUrl = document.getElementById('image').value
+        let updatedPhotoThumbnail = document.getElementById('thumb').value
+        let updatedPhotoTitle = document.getElementById('title').value
 
 
+        // creating form object
+        let formData = {
+            albumId : updatedAlbum,
+            url : updatedPhotoUrl,
+            thumbnailUrl: updatedPhotoThumbnail,
+            title: updatedPhotoTitle
+        }
 
-let btn = document.getElementById('btn')
+            
+        // updating the resource on our server
+            fetch(`${apiUrl}/${id}`, {
+                method : "PATCH",
+                headers : {
+                    "Content-Type" : "application/json",
+                    "Accept" : "application/json"
+                },
+                body : JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(photo => console.log(photo))
 
-btn.addEventListener('click', function(e){
-    e.preventDefault()
-
-    
-
-    fetch(`${apiUrl}/${id}`, {
-        method : "PATCH",
-        headers : {
-            "Content-Type" : "application/json",
-            "Accept" : "application/json"
-        },
-        body : JSON.stringify(formData)
-    })
-    .then(res => res.json())
-    .then(photo => console.log(photo))
-
-})
+        })
 
 }
 
